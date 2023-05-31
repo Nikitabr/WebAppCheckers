@@ -1,0 +1,169 @@
+﻿@page
+@using GameBrain
+@using Domain
+@using Microsoft.AspNetCore.Http.Extensions
+@model WebApp.Pages.CheckersGames.Play
+
+<div class="row">
+    <div class="column left ">
+        <div class="circle piece-white">
+            <h3 class="center piece-score">@Model.Brain.GetPiecesCount()</h3>
+        </div>
+        <div class="circle piece-black">
+            <h3 class="center piece-score">@Model.Brain.GetPiecesCount(false)</h3>
+        </div>
+    </div>
+    
+    <div class="column middle center">
+        <h2>Playing as: @GetPlayerName() (@(Model.PlayerNo == 0 ? "white" : "black"))</h2>
+        <h2>@GetGameStatus()</h2>
+        <h2>@if (Model.Brain.IsGameOver())
+            {
+                <text>GAME WON BY @(Model.Brain.NextMoveByBlack() ? $"{Model.CheckersGame.Player1Type} {Model.CheckersGame.Player1Name} WHITE" : $"{Model.CheckersGame.Player2Type} {Model.CheckersGame.Player2Name} BLACK")</text>
+            }
+        </h2>
+        <table class="table table-bordered game-table">
+            @{
+                var boardCopy = Model.Brain.GetBoard();
+            }
+            @for (var y = 0; y < boardCopy.Length; y++)
+            {
+                <tr>
+                    @for (var x = 0; x < boardCopy[0].Length; x++)
+                    {
+                        <td class="game-table-cell @GetCellBgrClass(boardCopy[y][x], x, y)"
+                            @if (IsPlayerMove() && Model.StartMove && Model.Brain.IsMovePossible(x, y) && !Model.Brain.IsGameOver())
+                            {
+                                // &&  Model.Brain.IsValidLocationToStartFrom(x,y)
+                                <text>
+                                    onclick="window.location='/CheckersGames/Play?id=@Model.CheckersGame.Id&playerNo=@Model.PlayerNo&xStart=@x&yStart=@y'"
+                                </text>
+
+                            }
+                            // Model.Brain.IsValidLocationToMoveTo(Model.XStart, Model.YStart, x, y)
+                            else if (Model.XStart.HasValue && Model.PossibleMoves.Contains((x, y)) && !Model.Brain.IsGameOver())
+                            {
+                                <text>
+                                    onclick="window.location='/CheckersGames/Play?id=@Model.CheckersGame.Id&playerNo=@Model.PlayerNo&xStart=@Model.XStart&yStart=@Model.YStart&xEnd=@x&yEnd=@y'"
+                                </text>
+                            }
+                            else if (!Model.Brain.IsGameOver())
+                            {
+                                <text>
+                                    onclick="window.location='/CheckersGames/Play?id=@Model.CheckersGame.Id&playerNo=@Model.PlayerNo'"
+                                </text>
+                            }>
+                            &nbsp;
+                            <span class="@getCellPiece(boardCopy[y][x], x, y)">
+                                @if (boardCopy[y][x] == EGamePiece.WhiteQ)
+                                {
+                                    <h5 class="star-black">☆</h5>
+
+                                }
+                                else if (boardCopy[y][x] == EGamePiece.BlackQ)
+                                {
+                                    <h5 class="star-white">☆</h5>
+                                }
+                            </span>
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+
+
+
+@functions
+{
+    string getCellPiece(EGamePiece? piece, int x, int y)
+    {
+        if (piece is EGamePiece.Black or EGamePiece.BlackQ)
+        {
+            return "circle piece-black position-absolute";
+        }
+        if (piece is EGamePiece.White or EGamePiece.WhiteQ)
+        {
+            return "circle piece-white position-absolute";
+        }
+        return "";
+    }
+    
+    
+    
+    string GetCellBgrClass(EGamePiece? piece, int x, int y)
+    {
+        if (Model.PossibleMoves.Contains((x, y)))
+        {
+            return "game-table-cell-move-possible";
+        }
+        
+        if (piece is EGamePiece.Blank or EGamePiece.Empty) 
+            return piece == EGamePiece.Blank ? "game-table-cell-saddlebrown" : "game-table-cell-antiquewhite";
+        
+        return Model.StartMove && Model.Brain.IsMovePossible(x, y) && IsPlayerMove() ? "game-table-cell-move-possible" : "game-table-cell-antiquewhite";
+    }
+
+
+    string GetGameStatus()
+    {
+        string res;
+
+        if (Model.Brain.IsGameOver())
+        {
+            return "GAME OVER";
+        }
+        return IsPlayerMove() ?  "Make a move!!!" : "Please wait for opponents move!";;
+    }
+    
+    bool IsAiMove()
+    {
+        if (Model.Brain.NextMoveByBlack() && Model.PlayerNo == 1 && Model.CheckersGame.Player2Type == EPlayerType.AI)
+        {
+            return true;
+        }
+        
+        if (!Model.Brain.NextMoveByBlack() && Model.PlayerNo == 0 && Model.CheckersGame.Player1Type == EPlayerType.AI)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    
+    bool IsPlayerMove()
+    {
+        if (Model.Brain.NextMoveByBlack() && Model.PlayerNo == 1)
+        {
+            return true;
+        }
+        
+        if (!Model.Brain.NextMoveByBlack() && Model.PlayerNo == 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    string GetPlayerName()
+    {
+        return Model.PlayerNo == 0 ? Model.CheckersGame.Player1Name : Model.CheckersGame.Player2Name;
+    }
+}
+
+@section Scripts
+{
+    @if (!Model.Brain.IsGameOver() && !IsPlayerMove() || IsAiMove())
+    {
+        <script>
+        setTimeout(() => {
+            window.location = '/CheckersGames/Play?id=@Model.CheckersGame.Id&playerNo=@Model.PlayerNo&checkAi=true';
+        }, 1000);
+        </script>
+    }
+}
+

@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DAL.Db\DAL.Db.csproj" />
+        <ProjectReference Include="..\GameBrain\GameBrain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\CheckersGames\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersGames\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersGames\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersGames\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersGames\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersGameStates\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersGameStates\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersGameStates\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersGameStates\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersGameStates\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersOptions\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersOptions\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersOptions\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersOptions\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\CheckersOptions\Index.cshtml" />
+    </ItemGroup>
+</Project>
